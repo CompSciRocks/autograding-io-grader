@@ -196,77 +196,80 @@ function run() {
     }
 
     let markdown = '';
+    let text = '';
+
+    if (status === 'fail') {
+      text += '❌ Test Failed\n';
+      markdown += '❌ Test Failed\n';
+    } else if (status === 'error') {
+      text += '💥 Error Executing Code\n';
+      markdown += '💥 Error Executing Code\n';
+    } else if (status === 'pass') {
+      text += '✅ Test Passed\n';
+      markdown += '✅ Test Passed\n';
+    }
+
+    text += '\n';
+
+    text += 'Test Results:\n';
+    text += '-------------\n';
+    text += `Name: ${inputs.testName}\n`;
+    text += `Status: ${status}\n`;
+    text += 'Score: ' + score + ' / ' + inputs.maxScore + '\n';
+    text += 'Execution Time: ' + (endTime - startTime) / 1000 + 's\n';
+
+    if (inputs.input.trim() !== '') {
+      text += '\nInput:\n';
+      text += '------\n';
+      text += inputs.input + '\n';
+
+      markdown += '\n**Input:**\n';
+      markdown += '```\n';
+      markdown += inputs.input;
+      markdown += '\n```\n';
+    }
+
+    text += '\n';
+
+    if (status === 'fail') {
+
+      text += 'Expected Output:\n';
+      text += '----------------\n';
+      text += inputs.expectedOutput + '\n';
+      text += '\n';
+      text += 'Your Output:\n';
+      text += '------------\n';
+      text += output + '\n';
+
+      markdown += '\n**Expected Output:**\n';
+      markdown += '```\n';
+      markdown += inputs.expectedOutput;
+      markdown += '\n```\n';
+    } else if (status === 'error') {
+      text += 'Error Message:\n';
+      text += '--------------\n';
+      text += error + '\n';
+
+      markdown += '\n**Error Message:**\n';
+      markdown += '```\n';
+      markdown += error;
+      markdown += '\n```\n';
+    } else if (status === 'pass') {
+      text += 'Your Output:\n';
+      text += '------------\n';
+      text += output + '\n';
+
+      markdown += '\n**Your Output:**\n';
+      markdown += '```\n';
+      markdown += output;
+    } else {
+      text += '\nUnknown run status status: ' + status;
+      markdown += '\nUnknown run status status: ' + status;
+    }
+
 
     if (inputs.outputFormat === 'text') {
-      if (status === 'fail') {
-        console.log('❌ Test Failed')
-        markdown += '❌ Test Failed\n';
-      } else if (status === 'error') {
-        console.log('💥 Error Executing Code')
-        markdown += '💥 Error Executing Code\n';
-      } else if (status === 'pass') {
-        console.log('✅ Test Passed')
-        markdown += '✅ Test Passed\n';
-      }
-
-      console.log('');
-
-      console.log('Test Results:')
-      console.log('-------------')
-      console.log(`Name: ${inputs.testName}`)
-      console.log(`Status: ${status}`)
-      console.log('Score: ' + score + ' / ' + inputs.maxScore)
-      console.log('Execution Time: ' + (endTime - startTime) / 1000 + 's')
-
-      if (inputs.input.trim() !== '') {
-        console.log('');
-        console.log('Input:')
-        console.log('------')
-        console.log(inputs.input)
-
-        markdown += '\n**Input:**\n';
-        markdown += '```\n';
-        markdown += inputs.input;
-        markdown += '\n```\n';
-      }
-
-      console.log('');
-
-      if (status === 'fail') {
-        console.log('Expected Output:')
-        console.log('----------------')
-        console.log(inputs.expectedOutput)
-        console.log('');
-        console.log('Your Output:')
-        console.log('------------')
-        console.log(output)
-
-        markdown += '\n**Expected Output:**\n';
-        markdown += '```\n';
-        markdown += inputs.expectedOutput;
-        markdown += '\n```\n';
-      } else if (status === 'error') {
-        console.log('Error Message:')
-        console.log('--------------')
-        console.log(error)
-
-        markdown += '\n**Error Message:**\n';
-        markdown += '```\n';
-        markdown += error;
-        markdown += '\n```\n';
-      } else if (status === 'pass') {
-        console.log('Your Output:')
-        console.log('------------')
-        console.log(output)
-
-        markdown += '\n**Your Output:**\n';
-        markdown += '```\n';
-        markdown += output;
-      } else {
-        console.log('Unknown run status status: ' + status);
-
-        markdown += '\nUnknown run status status: ' + status;
-      }
+      console.log(text);
     } else {
       console.log(result);
     }
