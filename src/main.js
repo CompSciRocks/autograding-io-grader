@@ -245,6 +245,11 @@ function run() {
       markdown += '```\n';
       markdown += inputs.expectedOutput;
       markdown += '\n```\n';
+
+      markdown += '\n**Your Output:**\n';
+      markdown += '```\n';
+      markdown += output;
+      markdown += '\n```\n';
     } else if (status === 'error') {
       text += 'Error Message:\n';
       text += '--------------\n';
