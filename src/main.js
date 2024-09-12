@@ -179,6 +179,7 @@ function run() {
       version: 1,
       status,
       max_score: inputs.maxScore,
+      markdown: '',
       tests: [
         {
           name: inputs.testName,
@@ -194,13 +195,18 @@ function run() {
       ],
     }
 
+    let markdown = '';
+
     if (inputs.outputFormat === 'text') {
       if (status === 'fail') {
         console.log('❌ Test Failed')
+        markdown += '❌ Test Failed\n';
       } else if (status === 'error') {
         console.log('💥 Error Executing Code')
+        markdown += '💥 Error Executing Code\n';
       } else if (status === 'pass') {
         console.log('✅ Test Passed')
+        markdown += '✅ Test Passed\n';
       }
 
       console.log('');
@@ -217,6 +223,11 @@ function run() {
         console.log('Input:')
         console.log('------')
         console.log(inputs.input)
+
+        markdown += '\n**Input:**\n';
+        markdown += '```\n';
+        markdown += inputs.input;
+        markdown += '\n```\n';
       }
 
       console.log('');
@@ -229,25 +240,49 @@ function run() {
         console.log('Your Output:')
         console.log('------------')
         console.log(output)
+
+        markdown += '\n**Expected Output:**\n';
+        markdown += '```\n';
+        markdown += inputs.expectedOutput;
+        markdown += '\n```\n';
       } else if (status === 'error') {
         console.log('Error Message:')
         console.log('--------------')
         console.log(error)
+
+        markdown += '\n**Error Message:**\n';
+        markdown += '```\n';
+        markdown += error;
+        markdown += '\n```\n';
       } else if (status === 'pass') {
         console.log('Your Output:')
         console.log('------------')
         console.log(output)
+
+        markdown += '\n**Your Output:**\n';
+        markdown += '```\n';
+        markdown += output;
       } else {
         console.log('Unknown run status status: ' + status);
+
+        markdown += '\nUnknown run status status: ' + status;
       }
     } else {
       console.log(result);
     }
 
+    result.markdown = btoa(markdown);
+
     core.setOutput('result', btoa(JSON.stringify(result)))
 
 
   } catch (error) {
+
+    let markdown = '### Error\n\n';
+    markdown += '```\n';
+    markdown += error;
+    markdown += '\n```';
+
     const result = {
       version: 1,
       status: 'error',

@@ -1,34 +1,39 @@
+
 name: Release
 on:
   workflow_dispatch:
-  
+  push:
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # Get environment variables for later
+      - uses: FranzDiebold/github-env-vars-action@v2
+      
       - uses: actions/checkout@v4
-        with:
-          ref: releases/v1
-          fetch-depth: 0
-      - name: Git config
+      - name: Setup Git
         run: |
-          git config user.name autograding-release-bot
-          git config user.email autograding-release-bot+education@github.com
-      - name: Run build and commit to releases/v1
+          git config --global user.email "ryan@nutt.com"
+          git config --global user.name "Ryan Nutt"
+      - name: Run build
         run: |
-          git reset --hard origin/main
           npm install --silent
           npm run build
           git add dist/
-          git commit -m "Release v1"
-          git push -f origin releases/v1
-      - name: Tag and push v1
-        run: |
-          git tag -f v1 # Since we are already on releases/v1 we don't need a ref. This will tag HEAD of releases/v1.
-          git push origin v1 --force
-      - name: Create Release
-        id: create_release
-        uses: ncipollo/release-action@v1
+          git commit -m "Releasing" --allow-empty
+          git push -f origin ${{ env.CI_REF_NAME }}
+      - name: Get version
+        id: project-version
+        uses: "euberdeveloper/ga-project-version@main"
         with:
-          tag: v1
-          allowUpdates: true
+          package-manager: npm
+      - name: Create release
+        run: |
+          gh release delete ${{ env.CI_REF_NAME }} -y || echo 'No release to delete'
+          gh release create ${{ env.CI_REF_NAME }} -t ${{ env.CI_REF_NAME }} -n "Release ${{ env.CI_REF_NAME }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
