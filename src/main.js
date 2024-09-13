@@ -267,6 +267,7 @@ function run() {
       markdown += '\n**Your Output:**\n';
       markdown += '```\n';
       markdown += output;
+      markdown += '```\n';
     } else {
       text += '\nUnknown run status status: ' + status;
       markdown += '\nUnknown run status status: ' + status;
