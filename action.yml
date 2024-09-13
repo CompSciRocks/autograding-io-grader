@@ -49,7 +49,7 @@ inputs:
     required: false
   output-format:
     description: "The format of the output. Supported values: `json`, `text`."
-    default: "json"
+    default: "text"
     required: false
 outputs:
   result:
