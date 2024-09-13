@@ -98,7 +98,7 @@ Input:
 `,B+=t+`
 `,g+=`
 **Your Output:**
-`,g+="```\n",g+=t):(B+=`
+`,g+="```\n",g+=t,g+="```\n"):(B+=`
 Unknown run status status: `+n,g+=`
 Unknown run status status: `+n),A.outputFormat==="text"?console.log(B):console.log(E),E.markdown=Sg(g),DA.setOutput("result",Sg(JSON.stringify(E)))}catch(e){let t=`### Error
 
