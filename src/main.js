@@ -143,11 +143,65 @@ function run() {
     inputs = getInputs()
 
     if (inputs.setupCommand) {
-      execSync(inputs.setupCommand, {
-        timeout: inputs.timeout,
-        stdio: 'inherit',
-        env,
-      })
+
+      try {
+        execSync(inputs.setupCommand, {
+          timeout: inputs.timeout,
+          stdio: 'inherit',
+          env,
+        })
+      }
+      catch (error) {
+        // There was an error with the setup command, which is probably going
+        // to also be the build command. Need to report that back okay. 
+        let text = '💥 Error Executing Setup Command\n';
+        text += '\n';
+        text += 'Setup Command:\n';
+        text += '--------------\n';
+        text += inputs.setupCommand + '\n\n';
+        text += 'Error Message:\n';
+        text += '--------------\n';
+        text += error + '\n';
+
+        let markdown = '### Error Executing Setup Command\n\n';
+        markdown += '**Setup Command:**\n';
+        markdown += '```\n';
+        markdown += inputs.setupCommand;
+        markdown += '\n```\n';
+
+        markdown += '\n**Error Message:**\n';
+        markdown += '```\n';
+        markdown += error;
+        markdown += '\n```';
+
+
+        const result = {
+          version: 1,
+          status: 'error',
+          markdown: btoa(markdown),
+          tests: [
+            {
+              name: inputs.testName || 'Unknown Test',
+              status: 'error',
+              message: error.message,
+              test_code: `${inputs.setupCommand || 'Unknown Command'}`,
+              filename: '',
+              line_no: 0,
+              execution_time: 0,
+            },
+          ],
+        }
+
+        if (inputs.outputFormat === 'text') {
+          console.log(text);
+        } else {
+          console.log(result);
+        }
+
+        core.setOutput('result', btoa(JSON.stringify(result)))
+
+        return;
+      }
     }
 
     const startTime = new Date()
