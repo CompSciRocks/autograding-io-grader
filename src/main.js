@@ -296,6 +296,7 @@ function run() {
     const result = {
       version: 1,
       status: 'error',
+      max_score: inputs.maxScore,
       markdown: btoa(markdown),
       tests: [
         {
@@ -306,6 +307,7 @@ function run() {
           filename: '',
           line_no: 0,
           execution_time: 0,
+          score: 0,
         },
       ],
     }
