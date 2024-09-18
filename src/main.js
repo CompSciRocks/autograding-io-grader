@@ -59,6 +59,7 @@ function getInputs() {
     maxScore,
     looseOptions,
     outputFormat,
+    filename,
   }
 }
 
@@ -157,7 +158,7 @@ function run() {
     inputs = getInputs()
 
 
-    if (false && inputs.filename) {
+    if (inputs.filename) {
       // Write input to file, overwriting if exists. Doing this before
       // the setup command so the setup command can interact with the
       // file.
