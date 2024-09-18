@@ -103,8 +103,8 @@ function compareLoose(output, expected) {
 
   let { trim, lTrim, rTrim, ignoreBlank, squashSpaces } = inputs.looseOptions
 
-  let outputLines = output.split('\r?\n')
-  let expectedLines = expected.split('\r?\n')
+  let outputLines = output.split(/\r?\n/)
+  let expectedLines = expected.split(/\r?\n/)
 
   if (trim || rTrim) {
     outputLines = outputLines.map((line) => line.trimEnd())
