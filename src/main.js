@@ -75,6 +75,7 @@ function executeTest(command, input, timeout) {
       })
         .toString()
         .trim();
+      return { output }
     } else {
       // Don't send stdin, input will have been
       // written to a file by this point. 
@@ -84,9 +85,7 @@ function executeTest(command, input, timeout) {
       })
         .toString()
         .trim();
-    }
-    return {
-      output,
+      return { output }
     }
   } catch (e) {
     const message = e.message.includes('ETIMEDOUT') ? 'Command was killed due to timeout' : e.message
