@@ -88,10 +88,10 @@ Input:
 **Your Output:**
 `,Q+="```\n",Q+=output,Q+="\n```\n"):r==="error"?(g+=`Error Message:
 `,g+=`--------------
-`,g+=error+`
+`,g+=output+`
 `,Q+=`
 **Error Message:**
-`,Q+="```\n",Q+=error,Q+="\n```\n"):r==="pass"?(g+=`Your Output:
+`,Q+="```\n",Q+=output,Q+="\n```\n"):r==="pass"?(g+=`Your Output:
 `,g+=`------------
 `,g+=output+`
 `,Q+=`
@@ -100,7 +100,7 @@ Input:
 Unknown run status status: `+r,Q+=`
 Unknown run status status: `+r),A.outputFormat==="text"?console.log(g):console.log(o),o.markdown=gi(Q),lA.setOutput("result",gi(JSON.stringify(o)))}catch(e){let t=`### Error
 
-`;t+="```\n",t+=e,t+="\n```";let r={version:1,status:"error",max_score:A.maxScore,markdown:gi(t),tests:[{name:A.testName||"Unknown Test",status:"error",message:e.message,test_code:`${A.command||"Unknown Command"} <stdin>${A.input||""}`,filename:"",line_no:0,execution_time:0,score:0}]};lA.setOutput("result",gi(JSON.stringify(r)))}}function gi(A){return Buffer.from(A).toString("base64")}uN();
+`;t+="```\n",t+=e.message,t+="\n```";let r={version:1,status:"error",max_score:A.maxScore,markdown:gi(t),tests:[{name:A.testName||"Unknown Test",status:"error",message:e.message,test_code:`${A.command||"Unknown Command"} <stdin>${A.input||""}`,filename:"",line_no:0,execution_time:0,score:0}]};lA.setOutput("result",gi(JSON.stringify(r)))}}function gi(A){return Buffer.from(A).toString("base64")}uN();
 /*! Bundled license information:
 
 undici/lib/fetch/body.js:
