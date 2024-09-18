@@ -1,5 +1,6 @@
 const { execSync } = require('child_process')
 const core = require('@actions/core')
+const fs = require('fs')
 
 const env = {
   PATH: process.env.PATH,
@@ -27,6 +28,8 @@ function getInputs() {
   const timeout = parseFloat(core.getInput('timeout') || 10) * 60000 // Convert to minutes
 
   const maxScore = parseInt(core.getInput('max-score') || 0)
+
+  const filename = core.getInput('filename')
 
   const looseOptions = {
     trim: ['1', 'true', 'yes'].includes(core.getInput('loose-trim').toLowerCase()),
@@ -57,20 +60,32 @@ function getInputs() {
     maxScore,
     looseOptions,
     outputFormat,
+    filename,
   }
 }
 
 function executeTest(command, input, timeout) {
   try {
-    const output = execSync(command, {
-      input,
-      timeout,
-      env,
-    })
-      .toString()
-      .trim()
-    return {
-      output,
+    if (input) {
+      // Run with stdin input
+      const output = execSync(command, {
+        input: input,
+        timeout: timeout,
+        env: env,
+      })
+        .toString()
+        .trim();
+      return { output }
+    } else {
+      // Don't send stdin, input will have been
+      // written to a file by this point. 
+      const output = execSync(command, {
+        timeout: timeout,
+        env: env,
+      })
+        .toString()
+        .trim();
+      return { output }
     }
   } catch (e) {
     const message = e.message.includes('ETIMEDOUT') ? 'Command was killed due to timeout' : e.message
@@ -142,6 +157,19 @@ function run() {
   try {
     inputs = getInputs()
 
+
+    if (inputs.filename) {
+      // Write input to file, overwriting if exists. Doing this before
+      // the setup command so the setup command can interact with the
+      // file.
+      try {
+        fs.writeFileSync(inputs.filename, inputs.input);
+      } catch (e) {
+        console.error('Error writing file ' + inputs.filename);
+        console.error(e.message);
+      }
+    }
+
     if (inputs.setupCommand) {
 
       const setOutput = execSync(inputs.setupCommand, {
@@ -151,8 +179,11 @@ function run() {
       })
     }
 
+
     const startTime = new Date()
-    const { output, error } = executeTest(inputs.command, inputs.input, inputs.timeout)
+
+    const { output, error } = executeTest(inputs.command, inputs.filename ? '' : inputs.input, inputs.timeout)
+
     const endTime = new Date()
 
     let status = 'pass'
@@ -290,7 +321,7 @@ function run() {
 
     let markdown = '### Error\n\n';
     markdown += '```\n';
-    markdown += error;
+    markdown += error.message;
     markdown += '\n```';
 
     const result = {
