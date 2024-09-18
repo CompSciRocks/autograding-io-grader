@@ -67,9 +67,9 @@ function executeTest(command, input, timeout) {
     if (input) {
       // Run with stdin input
       const output = execSync(command, {
-        input,
-        timeout,
-        env,
+        input: input,
+        timeout: timeout,
+        env: env,
       })
         .toString()
         .trim();
@@ -77,8 +77,8 @@ function executeTest(command, input, timeout) {
       // Don't send stdin, input will have been
       // written to a file by this point. 
       const output = execSync(command, {
-        timeout,
-        env,
+        timeout: timeout,
+        env: env,
       })
         .toString()
         .trim();
@@ -160,8 +160,13 @@ function run() {
     if (inputs.filename) {
       // Write input to file, overwriting if exists. Doing this before
       // the setup command so the setup command can interact with the
-      // file. 
-      fs.writeFileSync(inputs.filename, inputs.input);
+      // file.
+      try {
+        fs.writeFileSync(inputs.filename, inputs.input);
+      } catch (e) {
+        console.error('Error writing file ' + inputs.filename);
+        console.error(e.message);
+      }
     }
 
     if (inputs.setupCommand) {
