@@ -286,11 +286,11 @@ function run() {
     } else if (status === 'error') {
       text += 'Error Message:\n';
       text += '--------------\n';
-      text += output + '\n';
+      text += error + '\n';
 
       markdown += '\n**Error Message:**\n';
       markdown += '```\n';
-      markdown += output;
+      markdown += error;
       markdown += '\n```\n';
     } else if (status === 'pass') {
       text += 'Your Output:\n';
