@@ -65,6 +65,8 @@ function getInputs() {
 }
 
 function executeTest(command, input, timeout) {
+  console.log('Executing test');
+  console.log(command, input, timeout);
   try {
     if (input) {
       // Run with stdin input
