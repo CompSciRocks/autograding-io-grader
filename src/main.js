@@ -282,11 +282,11 @@ function run() {
     } else if (status === 'error') {
       text += 'Error Message:\n';
       text += '--------------\n';
-      text += error + '\n';
+      text += output + '\n';
 
       markdown += '\n**Error Message:**\n';
       markdown += '```\n';
-      markdown += error;
+      markdown += output;
       markdown += '\n```\n';
     } else if (status === 'pass') {
       text += 'Your Output:\n';
