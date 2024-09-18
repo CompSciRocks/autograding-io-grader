@@ -14,7 +14,7 @@ inputs:
   input:
     description: "Data passed to the command via stdin or file"
     required: false
-  file-name:
+  filename:
     description: "Filename to store the input in if not using stdin. Leave blank to use stdin."
     required: false
     default: ""
