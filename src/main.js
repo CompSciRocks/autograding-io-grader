@@ -66,7 +66,7 @@ function getInputs() {
 
 function executeTest(command, input, timeout) {
   try {
-    if (true || input) {
+    if (input) {
       // Run with stdin input
       const output = execSync(command, {
         input: input,
@@ -183,11 +183,8 @@ function run() {
 
     const startTime = new Date()
 
-    if (inputs.filename) {
-      const { output, error } = executeTest(inputs.command, '', inputs.timeout)
-    } else {
-      const { output, error } = executeTest(inputs.command, inputs.input, inputs.timeout)
-    }
+    const { output, error } = executeTest(inputs.command, inputs.filename ? inputs.input : '', inputs.timeout)
+
     const endTime = new Date()
 
     let status = 'pass'
