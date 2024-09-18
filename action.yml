@@ -12,8 +12,12 @@ inputs:
     description: "Primary command to run for the test. It receives input via stdin (if provided) and its output is evaluated against `expected-output` based on the `comparison-method`."
     required: true
   input:
-    description: "Data passed to the command via stdin."
+    description: "Data passed to the command via stdin or file"
     required: false
+  file-name:
+    description: "Filename to store the input in if not using stdin. Leave blank to use stdin."
+    required: false
+    default: ""
   expected-output:
     description: "Expected stdout from the command."
     required: true

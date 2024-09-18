@@ -28,6 +28,8 @@ function getInputs() {
 
   const maxScore = parseInt(core.getInput('max-score') || 0)
 
+  const filename = core.getInput('filename')
+
   const looseOptions = {
     trim: ['1', 'true', 'yes'].includes(core.getInput('loose-trim').toLowerCase()),
     lTrim: ['1', 'true', 'yes'].includes(core.getInput('loose-ltrim').toLowerCase()),
@@ -62,13 +64,25 @@ function getInputs() {
 
 function executeTest(command, input, timeout) {
   try {
-    const output = execSync(command, {
-      input,
-      timeout,
-      env,
-    })
-      .toString()
-      .trim()
+    if (input) {
+      // Run with stdin input
+      const output = execSync(command, {
+        input,
+        timeout,
+        env,
+      })
+        .toString()
+        .trim();
+    } else {
+      // Don't send stdin, input will have been
+      // written to a file by this point. 
+      const output = execSync(command, {
+        timeout,
+        env,
+      })
+        .toString()
+        .trim();
+    }
     return {
       output,
     }
@@ -142,6 +156,14 @@ function run() {
   try {
     inputs = getInputs()
 
+
+    if (inputs.filename) {
+      // Write input to file, overwriting if exists. Doing this before
+      // the setup command so the setup command can interact with the
+      // file. 
+      fs.writeFileSync(inputs.filename, inputs.input);
+    }
+
     if (inputs.setupCommand) {
 
       const setOutput = execSync(inputs.setupCommand, {
@@ -151,8 +173,14 @@ function run() {
       })
     }
 
+
     const startTime = new Date()
-    const { output, error } = executeTest(inputs.command, inputs.input, inputs.timeout)
+
+    if (inputs.filename) {
+      const { output, error } = executeTest(inputs.command, '', inputs.timeout)
+    } else {
+      const { output, error } = executeTest(inputs.command, inputs.input, inputs.timeout)
+    }
     const endTime = new Date()
 
     let status = 'pass'
