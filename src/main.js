@@ -182,7 +182,7 @@ function run() {
 
     const startTime = new Date()
 
-    const { output, error } = executeTest(inputs.command, inputs.filename ? inputs.input : '', inputs.timeout)
+    const { output, error } = executeTest(inputs.command, inputs.filename ? '' : inputs.input, inputs.timeout)
 
     const endTime = new Date()
 
