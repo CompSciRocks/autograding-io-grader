@@ -318,7 +318,7 @@ function run() {
 
     let markdown = '### Error\n\n';
     markdown += '```\n';
-    markdown += error;
+    markdown += error.message;
     markdown += '\n```';
 
     const result = {
