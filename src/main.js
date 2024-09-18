@@ -157,7 +157,7 @@ function run() {
     inputs = getInputs()
 
 
-    if (inputs.filename) {
+    if (false && inputs.filename) {
       // Write input to file, overwriting if exists. Doing this before
       // the setup command so the setup command can interact with the
       // file.
